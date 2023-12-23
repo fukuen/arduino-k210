@@ -1,8 +1,8 @@
 name=K210 Arduino
-version=0.9.91
+version=
 
 # Compilers
-tools.xpack-riscv-none-embed-gcc.path={runtime.platform.path}/tools/xpack-riscv-none-embed-gcc
+tools.xpack-riscv-none-embed-gcc.path={runtime.tools.xpack-riscv-none-embed-gcc.path}
 compiler.path={tools.xpack-riscv-none-embed-gcc.path}/bin/
 compiler.prefix=riscv-none-embed-
 
@@ -21,6 +21,7 @@ compiler.rtt.path={compiler.cores.path}/rt-thread
 compiler.include.path={compiler.cores.path}/rt-thread/include
 
 compiler.includes.flags="-I." "-I{compiler.cores.path}" "-I{compiler.cores.path}/k210-hal" "-I{compiler.sdk.path}/bsp" "-I{compiler.sdk.path}/drivers"  "-I{compiler.sdk.path}/nncase/include" "-I{compiler.sdk.path}/third_party/xtl/include" "-I{compiler.cores.path}/components/include" "-I{compiler.rtt.path}/lib" "-I{compiler.include.path}" "-I{compiler.include.path}/bsp" "-I{compiler.include.path}/kernel" "-I{compiler.include.path}/libc/common" "-I{compiler.include.path}/libc/cplusplus" "-I{compiler.include.path}/libc/newlib" "-I{compiler.include.path}/libc/posix" "-I{compiler.include.path}/DeviceDrivers" "-I{compiler.include.path}/CPU" 
+#compiler.build.flags=-DARDUINO={runtime.ide.version} -DARDUINO_{build.board} -DARDUINO_ARCH_{build.arch} -DARDUINO_BOARD="{build.board}" -DARDUINO_VARIANT="{build.variant}" -DF_CPU={build.f_cpu} -DENABLE_CONSOLE={build.enable_console} -DMAIN_STACK_SIZE={build.main_stack_size} -DONLY_KMODEL_V3={build.only_kmodel_v3} -DNNCASE_TARGET=k210 -DKENDRYTE_K210
 compiler.build.flags=-DARDUINO={runtime.ide.version} -DARDUINO_{build.board} -DARDUINO_ARCH_{build.arch} -DARDUINO_BOARD="{build.board}" -DARDUINO_VARIANT="{build.variant}" -DF_CPU={build.f_cpu} -DENABLE_CONSOLE={build.enable_console} -DMAIN_STACK_SIZE={build.main_stack_size} -DONLY_KMODEL_V3={build.only_kmodel_v3} -DNNCASE_TARGET=k210 -DKENDRYTE_K210
 compiler.lib.flags=-D__riscv64 -D__RTTHREAD__ -DRT_USING_LIBC -DRT_USING_NEWLIBC -D_POSIX_C_SOURCE=1 -Diomem_free=free -Diomem_malloc=malloc
 compiler.c_cpp.flags={compiler.lib.flags} {compiler.build.flags} -mcmodel=medany -mabi=lp64f -march=rv64imafc -fno-common -ffunction-sections -fdata-sections -fstrict-volatile-bitfields -fno-zero-initialized-in-bss -ffast-math -fno-math-errno -fsingle-precision-constant -Os -ggdb -Wall -Werror=all -Wno-error=unused-function -Wno-error=unused-but-set-variable -Wno-error=unused-variable -Wno-error=deprecated-declarations -Wno-multichar -Wextra -Werror=frame-larger-than=32768 -Wno-unused-parameter -Wno-sign-compare -Wno-error=missing-braces -Wno-error=return-type -Wno-error=pointer-sign -Wno-missing-braces -Wno-strict-aliasing -Wno-implicit-fallthrough -Wno-missing-field-initializers -Wno-int-to-pointer-cast -Wno-error=comment -Wno-error=logical-not-parentheses -Wno-error=duplicate-decl-specifier -Wno-error=parentheses
@@ -90,7 +91,7 @@ recipe.size.regex.data=\s*[0-9]+\s+[0-9]+\s+[0-9]+\s+([0-9]+).*
 ## KFlash
 ## ------
 
-tools.kflash_py.path={runtime.platform.path}/tools/kflash_py
+tools.kflash_py.path={runtime.tools.kflash_py.path}
 tools.kflash_py.cmd=kflash.py
 tools.kflash_py.cmd.windows=kflash.exe
 
@@ -100,7 +101,8 @@ tools.kflash_py.cmd.windows=kflash.exe
 tools.kflash_py.upload.protocol=serial
 tools.kflash_py.upload.params.verbose=
 tools.kflash_py.upload.params.quiet=
-tools.kflash_py.upload.pattern_args=-n -p {serial.port} -b {build.burn_baudrate} -B {build.burn_board} {build.path}/{build.project_name}.bin
+#tools.kflash_py.upload.pattern_args=-n -p {serial.port} -b {build.burn_baudrate} -B {build.burn_board} {build.path}/{build.project_name}.bin
+tools.kflash_py.upload.pattern_args=-n -p {serial.port} -B goE {build.path}/{build.project_name}.bin
 tools.kflash_py.upload.pattern=python3 "{path}/{cmd}" {upload.pattern_args}
 tools.kflash_py.upload.pattern.windows="{path}/{cmd}" {upload.pattern_args}
 

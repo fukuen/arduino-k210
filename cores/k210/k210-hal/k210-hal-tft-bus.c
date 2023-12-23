@@ -59,8 +59,12 @@ void hal_tft_write_command(uint8_t *cmd, uint32_t length)
     if((MODE_DATA_BYTE != tft_bus.mode) && (MODE_COMMAND != tft_bus.mode)) {
         tft_bus.mode = MODE_COMMAND;
 
+#ifdef ARDUINO_M5STICKV
+        spi_init(tft_bus.bus, SPI_WORK_MODE_0, SPI_FF_STANDARD, 8, 0);
+#else
         spi_init(tft_bus.bus, SPI_WORK_MODE_0, SPI_FF_OCTAL, 8, 0);
         spi_init_non_standard(tft_bus.bus, 8, 0, 0, SPI_AITM_AS_FRAME_FORMAT);
+#endif
     }
 
     dmac_channel_number_t dma_chn = hal_dma_get_free_chn();
@@ -79,8 +83,12 @@ void hal_tft_write_byte(uint8_t *data_buf, uint32_t length)
     if((MODE_DATA_BYTE != tft_bus.mode) && (MODE_COMMAND != tft_bus.mode)) {
         tft_bus.mode = MODE_DATA_BYTE;
 
+#ifdef ARDUINO_M5STICKV
+        spi_init(tft_bus.bus, SPI_WORK_MODE_0, SPI_FF_STANDARD, 8, 0);
+#else
         spi_init(tft_bus.bus, SPI_WORK_MODE_0, SPI_FF_OCTAL, 8, 0);
         spi_init_non_standard(tft_bus.bus, 8, 0, 0, SPI_AITM_AS_FRAME_FORMAT);
+#endif
     }
 
     dmac_channel_number_t dma_chn = hal_dma_get_free_chn();
@@ -96,8 +104,12 @@ void hal_tft_write_half(uint16_t *data_buf, uint32_t length)
     if(MODE_DATA_HALF != tft_bus.mode) {
         tft_bus.mode = MODE_DATA_HALF;
 
+#ifdef ARDUINO_M5STICKV
+        spi_init(tft_bus.bus, SPI_WORK_MODE_0, SPI_FF_STANDARD, 16, 0);
+#else
         spi_init(tft_bus.bus, SPI_WORK_MODE_0, SPI_FF_OCTAL, 16, 0);
         spi_init_non_standard(tft_bus.bus, 16, 0, 0, SPI_AITM_AS_FRAME_FORMAT);
+#endif
     }
 
     dmac_channel_number_t dma_chn = hal_dma_get_free_chn();
@@ -113,8 +125,12 @@ void hal_tft_write_word(uint32_t *data_buf, uint32_t length)
     if(MODE_DATA_WORD != tft_bus.mode) {
         tft_bus.mode = MODE_DATA_WORD;
 
+#ifdef ARDUINO_M5STICKV
+        spi_init(tft_bus.bus, SPI_WORK_MODE_0, SPI_FF_STANDARD, 32, 0);
+#else
         spi_init(tft_bus.bus, SPI_WORK_MODE_0, SPI_FF_OCTAL, 32, 0);
         spi_init_non_standard(tft_bus.bus, 0, 32, 0, SPI_AITM_AS_FRAME_FORMAT);
+#endif
     }
 
     dmac_channel_number_t dma_chn = hal_dma_get_free_chn();
@@ -130,8 +146,12 @@ void hal_tft_fill_data(uint32_t *data_buf, uint32_t length)
     if(MODE_DATA_FILL != tft_bus.mode) {
         tft_bus.mode = MODE_DATA_FILL;
 
+#ifdef ARDUINO_M5STICKV
+        spi_init(tft_bus.bus, SPI_WORK_MODE_0, SPI_FF_STANDARD, 32, 0);
+#else
         spi_init(tft_bus.bus, SPI_WORK_MODE_0, SPI_FF_OCTAL, 32, 0);
         spi_init_non_standard(tft_bus.bus, 0, 32, 0, SPI_AITM_AS_FRAME_FORMAT);
+#endif
     }
 
     dmac_channel_number_t dma_chn = hal_dma_get_free_chn();
@@ -164,7 +184,11 @@ void hal_tft_begin(int8_t clk_pin, int8_t cs_pin, int8_t dc_pin, uint32_t freq)
     hal_fpioa_set_pin_func(tft_bus.clk_pin, FUNC_SPI0_SCLK);
     hal_fpioa_set_pin_func(tft_bus.csx_pin, (fpioa_function_t)(FUNC_SPI0_SS0 + tft_bus.cs));
 
+#ifdef ARDUINO_M5STICKV
+    spi_init(tft_bus.bus, SPI_WORK_MODE_0, SPI_FF_STANDARD, 8, 0);
+#else
     spi_init(tft_bus.bus, SPI_WORK_MODE_0, SPI_FF_OCTAL, 8, 0);
+#endif
     spi_set_clk_rate(tft_bus.bus, tft_bus.freq);
 
     sysctl_set_spi0_dvp_data(1);
